@@ -11,7 +11,6 @@ def main():
 
     testeBusca = ['amor', 'casar']
     searchOnIndeces(dicio, testeBusca)
-    
 
 # def generate_conjunto(conjunto_path: str):
 #     """Gera um arquivo 'conjunto.txt' com o caminho para todos os arquivos no diretorio indicado"""
@@ -21,8 +20,14 @@ def main():
 #             for file in files:
 #                 conjunto.write( dir + '/' + file + "\n")
 
-def listWordsOnFile(path: str):
-    """Retona uma lista com todas as palavras contida em um arquivo"""
+def listWordsOnFile(path: str) -> list:
+    """
+    Retona uma lista com todas as palavras contida em um arquivo
+    
+    :param path: str
+
+    :return list
+    """
 
     list = []
 
@@ -33,13 +38,20 @@ def listWordsOnFile(path: str):
 
     return list
 
-def genIndices(arqs: str, desconsidera: list):
-    """"Gera um arquivo de indices e retorna um dicionario com os indices"""
+def genIndices(arqs_path: list, desconsidera: list) -> dict:
+    """"
+    Gera um arquivo de indices e retorna um dicionario com os indices
+    
+    :param arqs: list
+    :param desconsidera: list
+
+    :return dict    
+    """
 
     dicio = {}
     ind = 1
-    for a in arqs:
-        arq = open(a, 'r')
+    for arq_path in arqs_path:
+        arq = open(arq_path, 'r')
         for linha in arq:
             palavra = linha.replace(',', '').replace('.', '').replace('!', '').replace('?', '').replace('@', '').split()
             for pl in palavra:
@@ -67,8 +79,10 @@ def genIndices(arqs: str, desconsidera: list):
     return dicio
 
 def searchOnIndeces(dicio: dict, busca: list):
-    """"""
-
+    """
+    
+    
+    """
 
     dicioTeste = dicio.items()
     resp = []
@@ -82,10 +96,6 @@ def searchOnIndeces(dicio: dict, busca: list):
     a = ''
 
     print(respD)
-
-
-
-
 
 if __name__ == '__main__':
     main()
