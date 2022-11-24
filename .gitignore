@@ -127,3 +127,7 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+#Arquivos usados de texte
+.txt
+.texts/
