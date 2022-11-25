@@ -9,8 +9,8 @@ def main():
 
     dicio = genIndices(texts_path, desconsiderar)
 
-    testeBusca = ['amor', 'casar']
-    searchOnIndeces(dicio, testeBusca)
+    testeBusca = ['bom']
+    searchOnIndices(dicio, testeBusca, texts_path)
 
 # def generate_conjunto(conjunto_path: str):
 #     """Gera um arquivo 'conjunto.txt' com o caminho para todos os arquivos no diretorio indicado"""
@@ -39,7 +39,7 @@ def listWordsOnFile(path: str) -> list:
     return list
 
 def genIndices(arqs_path: list, desconsidera: list) -> dict:
-    """"
+    """
     Gera um arquivo de indices e retorna um dicionario com os indices
     
     :param arqs: list
@@ -51,51 +51,65 @@ def genIndices(arqs_path: list, desconsidera: list) -> dict:
     dicio = {}
     ind = 1
     for arq_path in arqs_path:
-        arq = open(arq_path, 'r')
-        for linha in arq:
-            palavra = linha.replace(',', '').replace('.', '').replace('!', '').replace('?', '').replace('@', '').split()
-            for pl in palavra:
-                if pl not in desconsidera:
-                    if pl in dicio:
-                        if ind in dicio[pl]:
-                            dicio[pl][ind] += 1 
+        with open(arq_path, 'r') as arq:
+            for linha in arq:
+                palavra = linha.replace(',', '').replace('.', '').replace('!', '').replace('?', '').replace('@', '').split()
+                for pl in palavra:
+                    if pl not in desconsidera:
+                        if pl in dicio:
+                            if ind in dicio[pl]:
+                                dicio[pl][ind] += 1 
+                            else:
+                                dicio[pl].update({ind:1})
                         else:
-                            dicio[pl].update({ind:1})
-                    else:
-                        dicio.update({pl:{ind:1}})
-        ind += 1
+                            dicio.update({pl:{ind:1}})
+            ind += 1
 
     # Gera arquivo indices.txt
     dicio = dict(sorted(dicio.items()))
-    ind_arq = open('indices.txt', 'w')
-    for key, val in dicio.items():
-        ind_arq.write(f'{key}:')
-        for v, o in val.items():
-            ind_arq.write(f' {v},{o}')
-        ind_arq.write('\n')
-
-    ind_arq.close()
+    
+    with open('indices.txt', 'w') as ind_arq:   
+        for key, val in dicio.items():
+            ind_arq.write(f'{key}:')
+            for v, o in val.items():
+                ind_arq.write(f' {v},{o}')
+            ind_arq.write('\n')
 
     return dicio
-
-def searchOnIndeces(dicio: dict, busca: list):
-    """
     
-    
+def searchOnIndices(dicio: dict, busca: list, names: list) -> list:
     """
+    Gera um arquivo informando quantos arquivos contém as palavras de busca e seus respectivos nomes.
+    Retorna uma lista indicando qual arquivo contém as palavras de busca.
+    
+    :param dicio: dict
+    :param busca: list
 
-    dicioTeste = dicio.items()
-    resp = []
+    :return list    
+    """
+    i = 0
+    a = []
+    b = []
 
     for word in busca:
-        for item in dicioTeste:
-            if word in item:
-                resp.append(item)
+        if word in dicio:
+            inds = dicio[word]
+            b = [k for k in inds]
+            if i == 0:
+                a = b.copy()
+            else:
+                a = [i for i in a if i in b]
+            b.clear()
+            i += 1
 
-    respD = dict(resp)
-    a = ''
-
-    print(respD)
+    print(a)
+    # Cria o arquivo 'resposta.txt' e escreve quantos e 
+    # quais arquivos possuem as palavras de busca
+    with open('resposta.txt', 'w') as arq:
+        arq.write(str(len(a))+'\n')
+        for i in a:
+            arq.write(names[i-1]+'\n')
+    
 
 if __name__ == '__main__':
     main()
