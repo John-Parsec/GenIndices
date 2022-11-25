@@ -1,28 +1,21 @@
-import os
+import sys
 
 def main():
-    conjunto_path = os.getcwd() + '/conjunto.txt'
-    desconsiderar_path = os.getcwd() + "/desconsiderar.txt"
+    conjunto_path = sys.argv[1]
+    desconsiderar_path = sys.argv[2]
+    consulta_path = sys.argv[3]
 
     texts_path = listWordsOnFile(conjunto_path)
     desconsiderar = listWordsOnFile(desconsiderar_path)
 
     dicio = genIndices(texts_path, desconsiderar)
 
-    testeBusca = ['bom']
-    searchOnIndices(dicio, testeBusca, texts_path)
-
-# def generate_conjunto(conjunto_path: str):
-#     """Gera um arquivo 'conjunto.txt' com o caminho para todos os arquivos no diretorio indicado"""
-#
-#     with open(conjunto_path, 'w') as conjunto:
-#         for dir, subdirs, files in os.walk('texts'):
-#             for file in files:
-#                 conjunto.write( dir + '/' + file + "\n")
+    consulta = listWordsOnFile(consulta_path)
+    searchOnIndices(dicio, consulta, texts_path)
 
 def listWordsOnFile(path: str) -> list:
     """
-    Retona uma lista com todas as palavras contida em um arquivo
+    Retona uma lista com todas as palavras contida em um arquivo.
     
     :param path: str
 
@@ -40,12 +33,13 @@ def listWordsOnFile(path: str) -> list:
 
 def genIndices(arqs_path: list, desconsidera: list) -> dict:
     """
-    Gera um arquivo de indices e retorna um dicionario com os indices
+    Gera um arquivo de indices.
+    Retorna um dicionario com os indices.
     
     :param arqs: list
     :param desconsidera: list
 
-    :return dict    
+    :return dict   
     """
 
     dicio = {}
@@ -85,30 +79,31 @@ def searchOnIndices(dicio: dict, busca: list, names: list) -> list:
     :param dicio: dict
     :param busca: list
 
-    :return list    
+    :return list  
     """
     i = 0
-    a = []
-    b = []
+    n_arqv = []
+    temp = []
 
     for word in busca:
         if word in dicio:
             inds = dicio[word]
-            b = [k for k in inds]
+            temp = [k for k in inds]
             if i == 0:
-                a = b.copy()
+                n_arqv = temp.copy()
             else:
-                a = [i for i in a if i in b]
-            b.clear()
+                n_arqv = [i for i in n_arqv if i in temp]
+            temp.clear()
             i += 1
 
-    print(a)
     # Cria o arquivo 'resposta.txt' e escreve quantos e 
     # quais arquivos possuem as palavras de busca
     with open('resposta.txt', 'w') as arq:
-        arq.write(str(len(a))+'\n')
-        for i in a:
+        arq.write(str(len(n_arqv))+'\n')
+        for i in n_arqv:
             arq.write(names[i-1]+'\n')
+
+    return n_arqv
     
 
 if __name__ == '__main__':
